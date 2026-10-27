@@ -29,7 +29,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'shop',
-    'account'
+    'account',
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
 ]
 
 MIDDLEWARE = [
@@ -109,6 +111,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
@@ -116,7 +120,54 @@ STATIC_URL = 'static/'
 MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        'OPTIONS':{
+            'host':'smtp.gmail.com',
+            
+        }
     },
 }
 
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+}
+
+
 AUTH_USER_MODEL ='account.CustomUser'
+EMAIL_EXPIRATION_TIME = 2
+
+
+
+from datetime import timedelta
+
+
+SIMPLE_JWT = {
+    # Token amal qilish muddatlari
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+
+    # Refresh token sozlamalari
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True
+}
+
+
+
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+
+
+# settings.py
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'bekzodovich0709@gmail.com'
+EMAIL_HOST_PASSWORD = 'qqaa ribw prxc xmim'  # Use environment variables in production!
+DEFAULT_FROM_EMAIL = 'Authentification'
