@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
-import string, random, secrets
+import string, random
 from datetime import timedelta
 from django.core.mail import send_mail
 from django.utils import timezone
@@ -23,14 +23,13 @@ class CustomUser(AbstractUser):
         ('Seller', 'Seller')
     )
 
-    phone_number = models.CharField(max_length=13, unique=True)
     email = models.EmailField(unique=True)
     is_verified = models.BooleanField(default=False)
-    auth_type = models.CharField(max_length=15, choices=AUTH_ROLE)
+    auth_type = models.CharField(max_length=15, choices=AUTH_ROLE, default='Customer')
     image = models.ImageField(upload_to='users/', blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     language = models.CharField(max_length=3, choices=LANGUAGE_CHOICES, default='uz')
-
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
     def token(self):
@@ -43,7 +42,6 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
-
 
 
 def code_generator():
@@ -59,6 +57,7 @@ class EmailOTP(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
 
+
     def save(self, *args, **kwargs):
         if not self.code:
             self.code = code_generator()
@@ -71,7 +70,11 @@ class EmailOTP(models.Model):
     
     @property
     def is_expired(self):
-        return timezone.now() > self.expires_at and self.is_used
+        return timezone.now() >= self.expires_at
+
+    @property
+    def is_valid(self):
+        return not self.is_used and not self.is_expired
 
     def __str__(self):
         return f"{self.user.email} - OTP"

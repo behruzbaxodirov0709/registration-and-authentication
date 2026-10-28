@@ -2,6 +2,12 @@
 
 from pathlib import Path
 
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -119,13 +125,9 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 MAILERS = {
     'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-        'OPTIONS':{
-            'host':'smtp.gmail.com',
-            
+        'BACKEND': 'django.core.mail.backends.console.EmailBackend'            
         }
-    },
-}
+    }
 
 
 REST_FRAMEWORK = {
@@ -161,13 +163,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 
+import os
 
-# settings.py
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'bekzodovich0709@gmail.com'
-EMAIL_HOST_PASSWORD = 'qqaa ribw prxc xmim'  # Use environment variables in production!
-DEFAULT_FROM_EMAIL = 'Authentification'
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = f"Authentication <{EMAIL_HOST_USER}>"
+EMAIL_EXPIRATION_TIME = 2
