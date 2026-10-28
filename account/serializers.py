@@ -35,9 +35,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         password = attrs.get('password')
-        confirm_password = attrs.get('confirm_password')
+        confirmation_password = attrs.get('confirmation_password')
 
-        if password != confirm_password:
+        if password != confirmation_password:
             raise serializers.ValidationError({
                 "confirm_password": "Kiritilgan parollar bir-biriga mos kelmadi."
             })
